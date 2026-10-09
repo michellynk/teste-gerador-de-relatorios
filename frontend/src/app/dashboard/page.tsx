@@ -8,9 +8,8 @@ export default function DashboardPage() {
     <AppLayout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Visão Geral</h1>
-          <p className="text-sm text-slate-500 mt-1">
-            Selecione um dos módulos para gerenciar a base de faturamento
+        <p className="text-sm text-slate-500 mt-1">
+            Selecione um dos módulos para começar a gerenciar a base de faturamentos!
           </p>
         </div>
 
@@ -44,15 +43,18 @@ export default function DashboardPage() {
           </Link>
 
           {/* Card Relatórios */}
-          <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-sm opacity-60 cursor-not-allowed">
-            <div className="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center font-bold mb-4">
+          <Link
+            href="/reports"
+            className="p-6 bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md hover:border-emerald-500 transition-all group"
+          >
+            <div className="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center font-bold mb-4 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
               📊
             </div>
             <h2 className="text-lg font-bold text-slate-800 mb-1">Relatórios de Alta Carga</h2>
             <p className="text-sm text-slate-500">
-              Geração de relatórios com paginação rápida e exportação CSV.
+              Filtros combinados por data e status, sumário financeiro e exportação CSV em stream.
             </p>
-          </div>
+          </Link>
         </div>
       </div>
     </AppLayout>

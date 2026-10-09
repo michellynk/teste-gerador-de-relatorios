@@ -29,8 +29,15 @@ export function AppLayout({ children }: AppLayoutProps) {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-100">
-        <p className="text-slate-500 font-medium">Verificando autenticação...</p>
+      <div
+        className="min-h-screen flex items-center justify-center bg-slate-900"
+        style={{
+          backgroundColor: '#3e5954',
+          color: '#dff6e4',
+          fontFamily: "'Poppins', 'Segoe UI', sans-serif",
+        }}
+      >
+        <p className="font-medium animate-pulse">Verificando autenticação...</p>
       </div>
     );
   }
@@ -43,26 +50,55 @@ export function AppLayout({ children }: AppLayoutProps) {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col">
-      {/* Top Navbar */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-40">
+    <div
+      className="min-h-screen flex flex-col bg-cover bg-center bg-no-repeat bg-fixed relative"
+      style={{
+        backgroundImage: "url('/simple-background.png')",
+        fontFamily: "'Poppins', 'Segoe UI', sans-serif",
+      }}
+    >
+      {/* Top Navbar com estilo do login */}
+      <header
+        className="border-b border-white/10 sticky top-0 z-40 backdrop-blur-md shadow-md"
+        style={{
+          backgroundColor: 'rgba(62, 89, 84, 0.95)',
+          color: '#dff6e4',
+        }}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-8">
-            <span className="text-lg font-bold text-slate-800 tracking-tight">
-              TDGR - Teste Gerador de Relatórios
-            </span>
-            <nav className="hidden md:flex gap-1">
+            {/* Logo / Título */}
+            <Link
+              href="/dashboard"
+              className="text-lg font-bold tracking-tight transition-opacity hover:opacity-90"
+              style={{ color: '#dff6e4' }}
+            >
+              Teste Técnico Gerador de Relatórios
+            </Link>
+
+            {/* Links de Navegação */}
+            <nav className="hidden md:flex gap-1.5">
               {navLinks.map((link) => {
                 const isActive = pathname === link.href;
                 return (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                    className={`px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all ${
                       isActive
-                        ? 'bg-blue-50 text-blue-700'
-                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                        ? 'font-semibold shadow-sm'
+                        : 'opacity-80 hover:opacity-100 hover:bg-black/15'
                     }`}
+                    style={
+                      isActive
+                        ? {
+                            backgroundColor: '#dff6e4',
+                            color: '#3e5954',
+                          }
+                        : {
+                            color: '#dff6e4',
+                          }
+                    }
                   >
                     {link.label}
                   </Link>
@@ -71,14 +107,16 @@ export function AppLayout({ children }: AppLayoutProps) {
             </nav>
           </div>
 
-          <div className="flex items-center gap-4">
+          {/* Dados do Usuário e Botão Sair */}
+          <div className="flex items-center gap-5">
             <div className="text-right hidden sm:block">
-              <p className="text-sm font-semibold text-slate-800 leading-none">{user.name}</p>
-              <p className="text-xs text-slate-500 mt-0.5">{user.email}</p>
+              <p className="text-sm font-semibold leading-none">{user.name}</p>
+              <p className="text-xs mt-1 opacity-75">{user.email}</p>
             </div>
+
             <button
               onClick={handleLogout}
-              className="px-3 py-1.5 text-xs font-semibold text-red-600 bg-red-50 hover:bg-red-100 rounded-md transition-colors"
+              className="px-3.5 py-1.5 text-xs font-semibold rounded-lg border border-red-400/40 bg-red-950/40 hover:bg-red-900/60 text-red-200 transition-all active:scale-[0.98]"
             >
               Sair
             </button>
@@ -87,7 +125,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       </header>
 
       {/* Main Content Area */}
-      <div className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+      <div className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 relative z-10">
         {children}
       </div>
     </div>
