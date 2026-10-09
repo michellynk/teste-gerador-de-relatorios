@@ -8,7 +8,7 @@ export function LoginForm() {
   return (
     <div className="w-full max-w-sm bg-white rounded-xl shadow-md p-8 border border-slate-200">
       <header className="mb-6 text-center">
-        <h1 className="text-2xl font-bold text-slate-800">Sistema de Faturamento</h1>
+        <h1 className="text-2xl font-bold text-slate-800">TDGR - Teste Gerador de Relatórios</h1>
         <p className="text-sm text-slate-500 mt-1">Gerador e Analisador de Relatórios</p>
       </header>
 

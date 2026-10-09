@@ -1,7 +1,7 @@
 import { LoginForm } from '@/components/auth/LoginForm';
 
 export const metadata = {
-  title: 'Login - Sistema de Faturamento',
+  title: 'Login - Teste Gerador de Relatórios',
   description: 'Autenticação no sistema gerador de relatórios',
 };
 
