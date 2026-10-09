@@ -11,7 +11,6 @@ import { AppLayout } from '@/components/layout/AppLayout';
 export default function BillingsPage() {
   const {
     billings,
-    customersList,
     pagination,
     filters,
     loading,
@@ -23,17 +22,35 @@ export default function BillingsPage() {
   return (
     <AppLayout>
       <div className="space-y-6">
-        <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        {/* Cabeçalho na identidade visual #3e5954 e Poppins */}
+        <header
+          className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+          style={{ fontFamily: "'Poppins', 'Segoe UI', sans-serif" }}
+        >
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">Gestão de Cobranças</h1>
-            <p className="text-sm text-slate-500 mt-1">
-              Controle de faturas, vencimentos e status financeiro
+            <h1
+              className="text-2xl font-bold tracking-tight"
+              style={{ color: '#3e5954' }}
+            >
+              Cobranças
+            </h1>
+            <p
+              className="text-sm mt-1 font-medium"
+              style={{ color: '#3e5954', opacity: 0.8 }}
+            >
+              Controle de cobranças, vencimentos e status de cobranças
             </p>
           </div>
 
+          {/* Botão Nova Cobrança no padrão #3e5954 / #dff6e4 */}
           <button
+            type="button"
             onClick={actions.openCreateModal}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm rounded-lg shadow-sm transition-colors self-start sm:self-auto"
+            className="px-4 py-2.5 font-semibold text-sm rounded-lg shadow-md transition-all hover:brightness-110 active:scale-[0.98] self-start sm:self-auto"
+            style={{
+              backgroundColor: '#3e5954',
+              color: '#dff6e4',
+            }}
           >
             + Nova Cobrança
           </button>
@@ -72,10 +89,10 @@ export default function BillingsPage() {
         </div>
 
         <BillingModal
-        isOpen={modals.isFormOpen}
-        billing={modals.selectedBilling}
-        onClose={actions.closeModals}
-        onSave={actions.handleSave}
+          isOpen={modals.isFormOpen}
+          billing={modals.selectedBilling}
+          onClose={actions.closeModals}
+          onSave={actions.handleSave}
         />
 
         <BillingDetailModal

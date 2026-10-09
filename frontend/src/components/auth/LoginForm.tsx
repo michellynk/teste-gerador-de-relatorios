@@ -32,6 +32,7 @@ export function LoginForm() {
           </label>
           <input
             id="email"
+            name="email"
             type="email"
             required
             autoComplete="email"
@@ -48,6 +49,7 @@ export function LoginForm() {
           </label>
           <input
             id="password"
+            name="password"
             type="password"
             required
             autoComplete="current-password"

@@ -5,6 +5,14 @@ import { ReportSummaryCards } from '@/components/reports/ReportSummaryCards';
 import { CustomerPagination } from '@/components/customers/CustomerPagination';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { formatDate } from '@/utils/date';
+import { BillingStatus } from '@/types/billing';
+
+const statusMap: Record<BillingStatus, { label: string; badgeClass: string }> = {
+  pending: { label: 'Pendente', badgeClass: 'bg-amber-100 text-amber-800 border border-amber-200' },
+  paid: { label: 'Pago', badgeClass: 'bg-emerald-100 text-emerald-800 border border-emerald-200' },
+  overdue: { label: 'Vencido', badgeClass: 'bg-red-100 text-red-800 border border-red-200' },
+  canceled: { label: 'Cancelado', badgeClass: 'bg-slate-100 text-slate-700 border border-slate-200' },
+};
 
 export default function ReportsPage() {
   const {
@@ -24,20 +32,51 @@ export default function ReportsPage() {
   return (
     <AppLayout>
       <div className="space-y-6">
-        <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        {/* Cabeçalho no padrão #3e5954 e Poppins */}
+        <header
+          className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+          style={{ fontFamily: "'Poppins', 'Segoe UI', sans-serif" }}
+        >
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">Relatório de Faturamento</h1>
-            <p className="text-sm text-slate-500 mt-1">
+            <h1
+              className="text-2xl font-bold tracking-tight"
+              style={{ color: '#3e5954' }}
+            >
+              Relatório de Faturamento
+            </h1>
+            <p
+              className="text-sm mt-1 font-medium"
+              style={{ color: '#3e5954', opacity: 0.8 }}
+            >
               Visão consolidada com apuração de juros compostos e exportação
             </p>
           </div>
 
+          {/* Botão de Exportação estilizado no padrão #3e5954 / #dff6e4 */}
           <button
+            type="button"
             onClick={actions.handleExportCsv}
             disabled={exporting || loading}
-            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-sm rounded-lg shadow-sm transition-colors flex items-center gap-2 self-start sm:self-auto disabled:opacity-50"
+            className="px-4 py-2.5 font-semibold text-sm rounded-lg shadow-md transition-all hover:brightness-110 active:scale-[0.98] flex items-center gap-2 self-start sm:self-auto disabled:opacity-50"
+            style={{
+              backgroundColor: '#3e5954',
+              color: '#dff6e4',
+            }}
           >
-            {exporting ? 'Gerando CSV...' : '📥 Exportar CSV'}
+            <svg
+              className="w-4 h-4 shrink-0"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+              />
+            </svg>
+            {exporting ? 'Gerando CSV...' : 'Exportar CSV'}
           </button>
         </header>
 
@@ -53,37 +92,37 @@ export default function ReportsPage() {
         <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
                 Vencimento Inicial
               </label>
               <input
                 type="date"
                 value={filters.start_date || ''}
                 onChange={(e) => actions.handleFilterChange('start_date', e.target.value)}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#3e5954]/30 focus:border-[#3e5954]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
                 Vencimento Final
               </label>
               <input
                 type="date"
                 value={filters.end_date || ''}
                 onChange={(e) => actions.handleFilterChange('end_date', e.target.value)}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#3e5954]/30 focus:border-[#3e5954]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
                 Status
               </label>
               <select
                 value={filters.status || ''}
                 onChange={(e) => actions.handleFilterChange('status', e.target.value)}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-[#3e5954]/30 focus:border-[#3e5954]"
               >
                 <option value="">Todos os status</option>
                 <option value="pending">Pendente</option>
@@ -96,53 +135,65 @@ export default function ReportsPage() {
 
           {/* Tabela de Relatório */}
           {loading ? (
-            <div className="py-16 text-center text-slate-500">Compilando dados do relatório...</div>
+            <div className="py-16 text-center text-slate-500 font-medium">
+              Compilando dados do relatório...
+            </div>
           ) : reportData.length === 0 ? (
-            <div className="py-12 text-center text-slate-500">Nenhum registro para os filtros informados.</div>
+            <div className="py-12 text-center text-slate-500 bg-white border border-slate-200 rounded-lg">
+              Nenhum registro para os filtros informados.
+            </div>
           ) : (
-            <div className="overflow-x-auto border border-slate-200 rounded-lg">
+            <div className="overflow-x-auto border border-slate-200 rounded-lg shadow-sm">
               <table className="w-full text-left text-sm text-slate-700">
-                <thead className="bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-600 uppercase">
+                <thead className="bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-600 uppercase tracking-wider">
                   <tr>
-                    <th className="px-4 py-3">Cliente</th>
-                    <th className="px-4 py-3">Descrição</th>
-                    <th className="px-4 py-3">Valor Original</th>
-                    <th className="px-4 py-3">Valor c/ Juros</th>
-                    <th className="px-4 py-3">Vencimento</th>
-                    <th className="px-4 py-3">Status</th>
+                    <th className="px-4 py-3.5">Cliente</th>
+                    <th className="px-4 py-3.5">Descrição</th>
+                    <th className="px-4 py-3.5">Valor Original</th>
+                    <th className="px-4 py-3.5">Valor c/ Juros</th>
+                    <th className="px-4 py-3.5">Vencimento</th>
+                    <th className="px-4 py-3.5 text-center">Status</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200">
                   {reportData.map((billing) => {
                     const calc = billing.calculation;
                     const hasInterest = calc && calc.is_overdue && calc.interest_amount > 0;
+                    const statusConfig = statusMap[billing.status] || {
+                      label: billing.status,
+                      badgeClass: 'bg-slate-100 text-slate-700 border border-slate-200',
+                    };
 
                     return (
-                      <tr key={billing.id} className="hover:bg-slate-50">
-                        <td className="px-4 py-3 font-medium text-slate-900">
-                          {billing.customer?.name}
+                      <tr key={billing.id} className="hover:bg-slate-50/80 transition-colors">
+                        <td className="px-4 py-3.5 font-semibold text-slate-900 whitespace-nowrap">
+                          {billing.customer?.name || '—'}
                         </td>
-                        <td className="px-4 py-3 text-slate-600 max-w-xs truncate">
+                        <td className="px-4 py-3.5 text-slate-600 max-w-xs truncate">
                           {billing.description}
                         </td>
-                        <td className="px-4 py-3 font-medium">
+                        <td className="px-4 py-3.5 font-medium text-slate-700 whitespace-nowrap">
                           {formatCurrency(billing.original_amount)}
                         </td>
-                        <td className="px-4 py-3">
+                        <td className="px-4 py-3.5 whitespace-nowrap">
                           {hasInterest ? (
                             <span className="font-bold text-red-600">
                               {formatCurrency(calc.final_amount)}
                             </span>
                           ) : (
-                            <span className="text-slate-800">
+                            <span className="text-slate-800 font-medium">
                               {formatCurrency(billing.original_amount)}
                             </span>
                           )}
                         </td>
-                        <td className="px-4 py-3">{formatDate(billing.due_date)}</td>
-                        <td className="px-4 py-3">
-                          <span className="text-xs uppercase font-semibold text-slate-600">
-                            {billing.status}
+                        <td className="px-4 py-3.5 text-slate-600 whitespace-nowrap">
+                          {formatDate(billing.due_date)}
+                        </td>
+                        <td className="px-4 py-3.5 whitespace-nowrap text-center">
+                          <span
+                            className={`inline-flex px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${statusConfig.badgeClass}`}
+                          >
+                            {statusConfig.label}
                           </span>
                         </td>
                       </tr>

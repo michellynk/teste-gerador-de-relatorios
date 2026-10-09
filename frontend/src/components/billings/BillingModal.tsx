@@ -44,7 +44,6 @@ export function BillingModal({
       .then((data) => {
         setCustomers(data);
 
-        // Se for nova cobrança e ainda não selecionou nada, seleciona o primeiro
         if (!billing && data.length > 0 && customerId === '') {
           setCustomerId(data[0].id);
         }
@@ -111,14 +110,27 @@ export function BillingModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4 overflow-y-auto">
-      <div className="w-full max-w-xl bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden my-8">
-        <header className="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
-          <h2 className="text-lg font-bold text-slate-800">
-            {billing ? 'Editar Cobrança' : 'Nova Cobrança'}
-          </h2>
+      <div
+        className="w-full max-w-xl bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden my-8"
+        style={{ fontFamily: "'Poppins', 'Segoe UI', sans-serif" }}
+      >
+        {/* Cabeçalho do Modal */}
+        <header className="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50/80">
+          <div>
+            <h2
+              className="text-lg font-bold tracking-tight"
+              style={{ color: '#3e5954' }}
+            >
+              {billing ? 'Editar Cobrança' : 'Nova Cobrança'}
+            </h2>
+            <p className="text-xs font-medium text-slate-500 mt-0.5">
+              {billing ? 'Atualize as informações do título' : 'Preencha os dados para emissão do título'}
+            </p>
+          </div>
           <button
+            type="button"
             onClick={onClose}
-            className="text-slate-400 hover:text-slate-600 text-xl font-bold leading-none"
+            className="text-slate-400 hover:text-slate-600 text-2xl font-semibold leading-none transition-colors p-1"
           >
             ×
           </button>
@@ -134,38 +146,46 @@ export function BillingModal({
           {/* Dropdown de Clientes Ativos */}
           <div>
             <div className="flex justify-between items-center mb-1">
-              <label htmlFor="customer-select" className="block text-sm font-medium text-slate-700">
+              <label
+                htmlFor="customer-select"
+                className="block text-xs font-semibold uppercase tracking-wider text-slate-600"
+              >
                 Cliente Vinculado (Ativos)
               </label>
               {loadingCustomers && (
-                <span className="text-xs text-blue-600 font-medium">Carregando clientes...</span>
+                <span className="text-xs font-medium" style={{ color: '#3e5954' }}>
+                  Carregando clientes...
+                </span>
               )}
             </div>
 
-          <CustomerSelect
+            <CustomerSelect
               customers={customers}
               selectedId={customerId}
               onChange={(id) => setCustomerId(id)}
               disabled={loadingCustomers}
             />
-            
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Descrição</label>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
+              Descrição
+            </label>
             <input
               type="text"
               required
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Ex: Mensalidade de Serviços - Março/2026"
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#3e5954]/30 focus:border-[#3e5954] text-sm"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Valor Original (R$)</label>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
+                Valor Original (R$)
+              </label>
               <input
                 type="number"
                 step="0.01"
@@ -174,12 +194,14 @@ export function BillingModal({
                 value={originalAmount}
                 onChange={(e) => setOriginalAmount(e.target.value)}
                 placeholder="0.00"
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#3e5954]/30 focus:border-[#3e5954] text-sm"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Taxa de Juros Mensal (%)</label>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
+                Taxa de Juros Mensal (%)
+              </label>
               <input
                 type="number"
                 step="0.01"
@@ -188,42 +210,48 @@ export function BillingModal({
                 value={interestRate}
                 onChange={(e) => setInterestRate(e.target.value)}
                 placeholder="2.5"
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#3e5954]/30 focus:border-[#3e5954] text-sm"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Data de Emissão</label>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
+                Data de Emissão
+              </label>
               <input
                 type="date"
                 required
                 value={issueDate}
                 onChange={(e) => setIssueDate(e.target.value)}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#3e5954]/30 focus:border-[#3e5954] text-sm"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Data de Vencimento</label>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
+                Data de Vencimento
+              </label>
               <input
                 type="date"
                 required
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#3e5954]/30 focus:border-[#3e5954] text-sm"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Status</label>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
+                Status
+              </label>
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value as BillingStatus)}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#3e5954]/30 focus:border-[#3e5954] bg-white text-sm"
               >
                 <option value="pending">Pendente</option>
                 <option value="paid">Pago</option>
@@ -233,12 +261,14 @@ export function BillingModal({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Data do Pagamento (Opcional)</label>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
+                Data do Pagamento (Opcional)
+              </label>
               <input
                 type="date"
                 value={paymentDate}
                 onChange={(e) => setPaymentDate(e.target.value)}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#3e5954]/30 focus:border-[#3e5954] text-sm"
               />
             </div>
           </div>
@@ -254,7 +284,11 @@ export function BillingModal({
             <button
               type="submit"
               disabled={submitting || loadingCustomers}
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors disabled:opacity-50"
+              className="px-4 py-2 text-sm font-semibold rounded-lg shadow-sm transition-all hover:brightness-110 active:scale-[0.98] disabled:opacity-50"
+              style={{
+                backgroundColor: '#3e5954',
+                color: '#dff6e4',
+              }}
             >
               {submitting ? 'Salvando...' : billing ? 'Atualizar Cobrança' : 'Cadastrar Cobrança'}
             </button>
