@@ -1,7 +1,7 @@
 <?php
-
 namespace App\Http\Controllers\Api;
 
+use App\Actions\CalculateBillingInterestAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BillingRequest;
 use App\Models\Billing;
@@ -10,9 +10,12 @@ use Illuminate\Http\Request;
 
 class BillingController extends Controller
 {
+    public function __construct(
+        private readonly CalculateBillingInterestAction $calculateInterestAction
+    ) {}
+
     public function index(Request $request): JsonResponse
     {
-        // Eager load do cliente usando os índices que criamos
         $query = Billing::with('customer:id,name,document,email');
 
         if ($customerId = $request->input('customer_id')) {
@@ -34,11 +37,30 @@ class BillingController extends Controller
         }
 
         $perPage = (int) $request->input('per_page', 10);
-        $billings = $query->latest('id')->paginate($perPage);
+        $paginated = $query->latest('id')->paginate($perPage);
 
-        return response()->json($billings);
+        // Anexa os cálculos em tempo real nas cobranças retornadas
+        $paginated->getCollection()->transform(function ($billing) {
+            $calculation = $this->calculateInterestAction->execute($billing);
+            $billing->calculation = $calculation->toArray();
+            return $billing;
+        });
+
+        return response()->json($paginated);
     }
 
+    public function show(Billing $billing): JsonResponse
+    {
+        $billing->load('customer:id,name,document,email');
+        $calculation = $this->calculateInterestAction->execute($billing);
+
+        return response()->json([
+            'data' => $billing,
+            'calculation' => $calculation->toArray(),
+        ]);
+    }
+
+    // store, update e destroy permanecem iguais...
     public function store(BillingRequest $request): JsonResponse
     {
         $billing = Billing::create($request->validated());
@@ -48,15 +70,6 @@ class BillingController extends Controller
             'message' => 'Cobrança cadastrada com sucesso.',
             'data' => $billing,
         ], 201);
-    }
-
-    public function show(Billing $billing): JsonResponse
-    {
-        $billing->load('customer:id,name,document,email');
-
-        return response()->json([
-            'data' => $billing,
-        ]);
     }
 
     public function update(BillingRequest $request, Billing $billing): JsonResponse

@@ -35,8 +35,8 @@ export function BillingTable({
     );
   }
 
-  const formatCurrency = (val: number | string) =>
-    Number(val).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  const formatCurrency = (val: number | string | undefined) =>
+    Number(val || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
   return (
     <div className="overflow-x-auto bg-white border border-slate-200 rounded-lg shadow-sm">
@@ -46,8 +46,8 @@ export function BillingTable({
             <th className="px-6 py-3">Cliente</th>
             <th className="px-6 py-3">Descrição</th>
             <th className="px-6 py-3">Valor Original</th>
+            <th className="px-6 py-3">Valor Atualizado</th>
             <th className="px-6 py-3">Vencimento</th>
-            <th className="px-6 py-3">Juros (%)</th>
             <th className="px-6 py-3">Status</th>
             <th className="px-6 py-3 text-right">Ações</th>
           </tr>
@@ -55,6 +55,9 @@ export function BillingTable({
         <tbody className="divide-y divide-slate-200">
           {billings.map((billing) => {
             const statusConfig = statusMap[billing.status];
+            const calc = billing.calculation;
+            const hasInterest = calc && calc.is_overdue && calc.interest_amount > 0;
+
             return (
               <tr key={billing.id} className="hover:bg-slate-50 transition-colors">
                 <td className="px-6 py-4">
@@ -62,11 +65,26 @@ export function BillingTable({
                   <div className="text-xs text-slate-400">{billing.customer?.document}</div>
                 </td>
                 <td className="px-6 py-4 max-w-xs truncate">{billing.description}</td>
-                <td className="px-6 py-4 font-semibold text-slate-900">
+                <td className="px-6 py-4 font-medium text-slate-700">
                   {formatCurrency(billing.original_amount)}
                 </td>
+                <td className="px-6 py-4">
+                  {hasInterest ? (
+                    <div>
+                      <div className="font-bold text-red-600">
+                        {formatCurrency(calc.final_amount)}
+                      </div>
+                      <div className="text-[11px] text-red-500 font-medium">
+                        +{formatCurrency(calc.interest_amount)} ({calc.days_overdue}d atraso)
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-slate-900 font-medium">
+                      {formatCurrency(billing.original_amount)}
+                    </div>
+                  )}
+                </td>
                 <td className="px-6 py-4">{formatDate(billing.due_date)}</td>
-                <td className="px-6 py-4">{billing.interest_rate}% a.m.</td>
                 <td className="px-6 py-4">
                   <span className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium ${statusConfig.badgeClass}`}>
                     {statusConfig.label}
