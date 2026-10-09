@@ -8,6 +8,12 @@ export interface CustomerPayload {
   status: 'active' | 'inactive';
 }
 
+export interface CustomerOption {
+  id: number;
+  name: string;
+  document: string;
+}
+
 export const customerService = {
   async list(filters: CustomerFilters = {}): Promise<PaginatedResponse<Customer>> {
     const params = new URLSearchParams();
@@ -40,5 +46,10 @@ export const customerService = {
 
   async delete(id: number): Promise<{ message: string }> {
     return apiFetch(`/customers/${id}`, { method: 'DELETE' });
+  },
+
+  async getActiveOptions(search = ''): Promise<CustomerOption[]> {
+    const query = search ? `?search=${encodeURIComponent(search)}` : '';
+    return apiFetch(`/customers/active-options${query}`, { method: 'GET' });
   },
 };

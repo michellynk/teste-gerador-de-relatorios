@@ -67,4 +67,15 @@ class CustomerController extends Controller
             'message' => 'Cliente removido com sucesso.',
         ]);
     }
+
+    public function activeOptions(Request $request): JsonResponse
+    {
+        $customers = Customer::query()
+            ->where('status', 'active')
+            ->select(['id', 'name', 'document'])
+            ->orderBy('name')
+            ->get();
+
+        return response()->json($customers);
+    }
 }

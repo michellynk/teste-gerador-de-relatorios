@@ -30,15 +30,18 @@ export default function DashboardPage() {
           </Link>
 
           {/* Card Cobranças */}
-          <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-sm opacity-60 cursor-not-allowed">
-            <div className="w-10 h-10 bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center font-bold mb-4">
+          <Link
+            href="/billings"
+            className="p-6 bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md hover:border-amber-500 transition-all group"
+          >
+            <div className="w-10 h-10 bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center font-bold mb-4 group-hover:bg-amber-600 group-hover:text-white transition-colors">
               💳
             </div>
-            <h2 className="text-lg font-bold text-slate-800 mb-1">Cobranças (Próximo)</h2>
+            <h2 className="text-lg font-bold text-slate-800 mb-1">Cobranças</h2>
             <p className="text-sm text-slate-500">
-              Gerencie faturas com cálculo automático de juros compostos.
+              Gerencie faturas com filtros por cliente, vencimento e status.
             </p>
-          </div>
+          </Link>
 
           {/* Card Relatórios */}
           <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-sm opacity-60 cursor-not-allowed">
