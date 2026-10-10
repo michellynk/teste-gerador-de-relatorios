@@ -21,4 +21,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('reports/billings', [ReportController::class, 'index']);
     Route::get('reports/billings/export-csv', [ReportController::class, 'exportCsv']);
+    Route::get('reports/billings/export-pdf', [ReportController::class, 'exportPdf']);
+
 });

@@ -8,6 +8,7 @@ export function useBillingReport() {
   const [data, setData] = useState<BillingReportResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [exporting, setExporting] = useState(false);
+  const [exportingPdf, setExportingPdf] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const [filters, setFilters] = useState<ReportFilters>({
@@ -49,9 +50,20 @@ export function useBillingReport() {
     try {
       await reportService.downloadCsv(filters);
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : 'Erro ao baixar arquivo.');
+      alert(err instanceof Error ? err.message : 'Erro ao baixar arquivo CSV.');
     } finally {
       setExporting(false);
+    }
+  }
+
+  async function handleExportPdf() {
+    setExportingPdf(true);
+    try {
+      await reportService.downloadPdf(filters);
+    } catch (err: unknown) {
+      alert(err instanceof Error ? err.message : 'Erro ao baixar arquivo PDF.');
+    } finally {
+      setExportingPdf(false);
     }
   }
 
@@ -75,11 +87,13 @@ export function useBillingReport() {
     filters,
     loading,
     exporting,
+    exportingPdf,
     error,
     actions: {
       handleFilterChange,
       handlePageChange,
       handleExportCsv,
+      handleExportPdf,
       refresh: fetchReport,
     },
   };
